@@ -1,68 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Assistant</title>
+    <title>My AI Personal Assistant</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            max-width: 500px;
-            width: 100%;
-            text-align: center;
-        }
-        h1 {
-            color: #4caf50;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        p {
-            color: #b0b0b0;
-            font-size: 16px;
-            line-height: 1.5;
-            margin-bottom: 25px;
-        }
-        .btn {
-            background-color: #4caf50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .btn:hover {
-            background-color: #45a049;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #121212; color: #fff; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        .chat-container { width: 90%; max-width: 450px; height: 85vh; background: #1e1e1e; border-radius: 12px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .chat-header { background: #252525; padding: 15px; text-align: center; font-weight: bold; color: #4caf50; border-bottom: 1px solid #333; }
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .message { max-width: 80%; padding: 10px 14px; border-radius: 10px; font-size: 15px; line-height: 1.4; }
+        .user { align-self: flex-end; background: #4caf50; color: #fff; }
+        .bot { align-self: flex-start; background: #333; color: #fff; }
+        .input-area { display: flex; padding: 10px; background: #252525; gap: 8px; }
+        input { flex: 1; padding: 10px; border-radius: 6px; border: none; outline: none; background: #333; color: #fff; }
+        button { background: #4caf50; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>My Personal Assistant</h1>
-        <p>Welcome! Your GitHub Pages website is now up and running successfully.</p>
-        <button class="btn" onclick="alert('System Active!')">Get Started</button>
+
+<div class="chat-container">
+    <div class="chat-header">🤖 My AI Assistant</div>
+    <div class="chat-box" id="chatBox">
+        <div class="message bot">Haan ji Zeeshan bhai! Kaise hain aap? Main aapka AI assistant hu. Bolo kya madad karu?</div>
     </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Yahan likho..." onkeypress="handleKey(event)">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    // System Memory - Aapka Naam
+    const userName = "Syed Zeeshan";
+
+    function speakText(text) {
+        if ('speechSynthesis' in window) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'hi-IN'; // Indian Accent
+            window.speechSynthesis.speak(speech);
+        }
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('userInput');
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage(text, 'user');
+        input.value = '';
+
+        setTimeout(() => {
+            let botReply = getBotResponse(text);
+            addMessage(botReply, 'bot');
+            speakText(botReply); // Bol kar jawaab dega
+        }, 600);
+    }
+
+    function addMessage(text, sender) {
+        const chatBox = document.getElementById('chatBox');
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        msgDiv.innerText = text;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function getBotResponse(input) {
+        let msg = input.toLowerCase();
+
+        if (msg.includes("naam") || msg.includes("who am i") || msg.includes("kaun hu")) {
+            return `Aapka naam ${userName} hai! Main aapko ache se jaanta hu.`;
+        } else if (msg.includes("hello") || msg.includes("hi") || msg.includes("hey")) {
+            return `Haan Zeeshan bhai, bolo kya haal chaal?`;
+        } else if (msg.includes("kaise ho") || msg.includes("kaisa hai")) {
+            return `Main ekdam badhiya hu bhai! Aap batao aapka din kaisa raha?`;
+        } else if (msg.includes("kya kar sakte ho") || msg.includes("help")) {
+            return `Main aapke saath Hinglish me chat kar sakta hu, bol kar jawab de sakta hu, aur aapki baatein yaad rakh sakta hu!`;
+        } else {
+            return `Sahi hai Zeeshan bhai! Main aapki baat samajh gaya. Aage aur kya setup karna hai batao?`;
+        }
+    }
+</script>
+
 </body>
 </html>
-
